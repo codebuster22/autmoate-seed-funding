@@ -46,6 +46,7 @@ class App extends Component {
 			this.setState(
 				{
 					network: network,
+					factory: this.seedFactory.options.address,
 					isLoaded: true,
 					currentAccount: (await this.web3.eth.getAccounts())[0]
 				}
@@ -76,6 +77,24 @@ class App extends Component {
 		});
 	}
 
+	loadNewFactory = async (address) => {
+		console.log(address);
+		this.seedFactory = new this.web3.eth.Contract(SeedFactory.abi, address);
+		this.setState(
+			{
+				factory: this.seedFactory.options.address
+			}
+		);
+	}
+
+	handleFactoryAddress = async (event) => {
+		this.setState(
+			{
+				newFactoryAddress: event.target.value
+			}
+		);
+	}
+
 	renderDeployedSeeds = (seeds) => {
 		return seeds.map(
 			seed => <SeedCard key={seed} address={seed} web3={this.web3} account={this.state.currentAccount} />
@@ -84,19 +103,29 @@ class App extends Component {
 
     render() {
         return (
-            <div className="App">
-				<h4>
-					Network used:- {this.state.network}
-				</h4>
+            this.state.isLoaded?
+			<div className="App">
+				<h5>
+					Network used:- {this.state.network}<br/>
+					Seed Factory Used:- {this.state.factory}
+				</h5>
 				<div>
-					<input placeholder={"change factory address"} name={"factoryAddress"} value={this.state.factoryAddress} />
-					<button type={"button"} onClick={this.loadNewFactory}>Load New Factory</button>
+					<input placeholder={"change factory address"} value={this.state.newFactoryAddress} onChange={this.handleFactoryAddress} />
+					<button type={"button"} onClick={()=>this.loadNewFactory(this.state.newFactoryAddress)}>Load New Factory</button>
+					{
+						this.state.factory !== contractAddresses[this.state.network].SeedFactory?
+							<button type={"button"} onClick={()=>this.loadNewFactory(contractAddresses[this.state.network].SeedFactory)}>Use Default Factory</button>
+							:
+							null
+					}
 				</div>
 				<div>
 					<button type={"button"} onClick={this.loadDeployedSeeds}>Load Seeds</button>
 					{this.renderDeployedSeeds(this.state.seeds)}
 				</div>
-            </div>
+			</div>
+			:
+			<div>Loading</div>
         );
     }
 }
