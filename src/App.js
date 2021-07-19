@@ -107,7 +107,8 @@ class App extends Component {
 			<div className="App">
 				<h5>
 					Network used:- {this.state.network}<br/>
-					Seed Factory Used:- {this.state.factory}
+					Seed Factory Used:- {this.state.factory}<br/>
+					Note:- Use the Refresh button for fetching the update seed state for paused and closed.
 				</h5>
 				<div>
 					<input placeholder={"change factory address"} value={this.state.newFactoryAddress} onChange={this.handleFactoryAddress} />

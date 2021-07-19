@@ -14,17 +14,20 @@ const SeedCard = ({address, web3, account}) => {
     const [isFunded, setIsFunded] = useState(false);
     const [balance, setBalance] = useState();
     const [metadata, setMetadata] = useState();
-    const [whitelists, setWhitelists] = useState();
+    const [admin, setAdmin] = useState();
+    const [name, setName] = useState();
+    const [isPaused, setIsPaused] = useState(false);
+    const [isClosed, setIsClosed] = useState(false);
 
     useEffect(() => {
         const seed = new web3.eth.Contract(Seed.abi, address);
-        setSeed(seed);
         const getToken = async () => {
             const seedToken = await seed.methods.seedToken().call();
             const token = new web3.eth.Contract(ERC20.abi, seedToken);
             setToken(token);
             setIsLoaded(true);
         };
+        setSeed(seed);
         getToken();
     },[address, web3]);
 
@@ -57,6 +60,10 @@ const SeedCard = ({address, web3, account}) => {
         setMetadata(metadata);
     }
 
+    const getAdmin = async () => {
+        setAdmin(await seed.methods.admin().call());
+    }
+
     const fundSeed = async () => {
         await token.methods.transfer(seed.options.address, requiredTokens).send({
             from : account
@@ -75,6 +82,10 @@ const SeedCard = ({address, web3, account}) => {
         const res = await axios.get(`https://ipfs.io/ipfs/${metadata}`);
         return await fetchWhitelist(JSON.parse(res.data).seedDetails.whitelist);
     }
+    const parseName = async () => {
+        const res = await axios.get(`https://ipfs.io/ipfs/${metadata}`);
+        return JSON.parse(res.data).general.projectName;
+    }
 
     const addWhitelist = async () => {
         const whitelists = await parseWhiteList();
@@ -84,43 +95,110 @@ const SeedCard = ({address, web3, account}) => {
         });
     }
 
+    const getSeedStatus = async () => {
+        setIsPaused(await seed.methods.paused().call());
+        setIsClosed(await seed.methods.closed().call());
+    }
+
+    const pause  = async () => {
+        if(!isPaused){
+            await seed.methods.pause().send({
+                from: account
+            });
+            return;
+        }
+        alert("Seed is already Paused");
+    }
+
+    const unpause = async () => {
+        if(isPaused){
+            await seed.methods.unpause().send({
+                from: account
+            });
+            return;
+        }
+        alert("Seed is already Unpaused");
+    }
+
+    const close = async () => {
+        if(!isClosed){
+            await seed.methods.close().send({
+                from: account
+            });
+            return;
+        }
+        alert("Seed is already Closed");
+    }
+
+
     useEffect(
         () => {
             if(isLoaded){
                 getTokenName();
+                getAdmin();
                 calculateRequiredSeed();
                 checkIfWhiteList();
                 checkIfFunded();
                 checkBalance();
+                getSeedStatus();
                 getMetadata();
             }
-        },[seed, isLoaded, web3, address, token]
-    )
+        },[isLoaded]
+    );
+
+    useEffect(
+        () => {
+            if(metadata){
+                (async () => {
+                    setName(await parseName());
+                })();
+            }
+        }, [metadata]
+    );
 
     return (
         isLoaded?(
             <div className={"seed-card"}>
-                <h4>Seed:- {seed.options.address}</h4>
+                <h4>Project Name:- {name}</h4>
                 <p>
+                    Seed:- {seed.options.address}<br />
+                    Admin:- {admin}<br />
                     Seed Token Address:- {token.options.address}<br/>
                     Seed Token Name:- {tokenName}<br />
                     Required Seed Tokens:- {requiredTokens}<br/>
                     Balance:- {balance}<br/>
                     isFunded:- {isFunded.toString()}<br/>
                     isWhitelisted:- {isWhitelisted.toString()}<br/>
+                    isClosed:- {isClosed.toString()}<br/>
+                    isPaused:- {isPaused.toString()}<br/>
                 </p>
+                <button type={'button'} onClick={getSeedStatus}>Refresh Seed Status</button>
                 {
-                    isWhitelisted?
-                        <button type={'button'} onClick={addWhitelist}>Add Whitelist</button>
-                        :
+                    isClosed?
                         null
-                }
-                {
-                    (!isFunded && balance === '0')?
-                        <button type={'button'} onClick={fundSeed}>Fund Seed</button>
                         :
-                        null
-                }
+                        (<>
+                            <button type={'button'} onClick={close}>Close Seed</button>
+                            {
+                                isPaused?
+                                    <button type={'button'} onClick={unpause}>Unpause Seed</button>
+                                    :
+                                    <button type={'button'} onClick={pause}>Pause Seed</button>
+                            }
+                            {
+                                isWhitelisted?
+                                    <button type={'button'} onClick={addWhitelist}>Add Whitelist</button>
+                                    :
+                                    null
+                            }
+                            {
+                                (!isFunded && balance === '0')?
+                                    <button type={'button'} onClick={fundSeed}>Fund Seed</button>
+                                    :
+                                    null
+                            }
+                        </>)
+                    }
             </div>
             )
             :
