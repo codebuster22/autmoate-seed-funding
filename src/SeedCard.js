@@ -66,7 +66,7 @@ const SeedCard = ({address, web3, account, gasPriceUrl}) => {
 
     const fundSeed = async () => {
         try{
-            const gas = await token.methods.transfer().estimateGas({from: account});
+            const gas = await token.methods.transfer(seed.options.address, requiredTokens).estimateGas({from: account});
             const gasPrice = await getGasPrice();
             const cost = (new web3.utils.BN(gasPrice)).mul(new web3.utils.BN(gas))
             alert(`Cost of transaction:- ${web3.utils.fromWei(cost)}`);
