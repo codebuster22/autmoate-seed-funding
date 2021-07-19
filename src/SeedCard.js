@@ -3,7 +3,7 @@ import ERC20 from './contracts/ERC20.json';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const SeedCard = ({address, web3, account}) => {
+const SeedCard = ({address, web3, account, gasPriceUrl}) => {
 
     const [isLoaded, setIsLoaded] = useState(false);
     const [seed, setSeed] = useState();
@@ -65,9 +65,19 @@ const SeedCard = ({address, web3, account}) => {
     }
 
     const fundSeed = async () => {
-        await token.methods.transfer(seed.options.address, requiredTokens).send({
-            from : account
-        });
+        try{
+            const gas = await token.methods.transfer().estimateGas({from: account});
+            const gasPrice = await getGasPrice();
+            const cost = (new web3.utils.BN(gasPrice)).mul(new web3.utils.BN(gas))
+            alert(`Cost of transaction:- ${web3.utils.fromWei(cost)}`);
+            await token.methods.transfer(seed.options.address, requiredTokens).send({
+                from : account,
+                gas,
+                gasPrice
+            });
+        } catch (error) {
+            alert(error.message);
+        }
     }
 
     const fetchWhitelist = async (url) => {
@@ -87,12 +97,30 @@ const SeedCard = ({address, web3, account}) => {
         return JSON.parse(res.data).general.projectName;
     }
 
+    const getGasPrice = async () => {
+        const unparsedGasPrice = (await axios.get(gasPriceUrl)).data.average/10
+        return web3.utils.toWei(
+            unparsedGasPrice.toString(),
+            'gwei'
+            );
+    }
+
     const addWhitelist = async () => {
         const whitelists = await parseWhiteList();
         alert(`This address will be added as whitelist:- ${whitelists}`);
-        await seed.methods.whitelistBatch(whitelists).send({
-            from: account
-        });
+        try{
+            const gas = await seed.methods.whitelistBatch(whitelists).estimateGas({from: account});
+            const gasPrice = await getGasPrice();
+            const cost = (new web3.utils.BN(gasPrice)).mul(new web3.utils.BN(gas))
+            alert(`Cost of transaction:- ${web3.utils.fromWei(cost)}`);
+            await seed.methods.whitelistBatch(whitelists).send({
+                from: account,
+                gas,
+                gasPrice 
+            });
+        } catch (error) {
+            alert(error.message);
+        }
     }
 
     const getSeedStatus = async () => {
@@ -102,9 +130,19 @@ const SeedCard = ({address, web3, account}) => {
 
     const pause  = async () => {
         if(!isPaused){
-            await seed.methods.pause().send({
-                from: account
-            });
+            try{
+                const gas = await seed.methods.pause().estimateGas({from: account});
+                const gasPrice = await getGasPrice();
+                const cost = (new web3.utils.BN(gasPrice)).mul(new web3.utils.BN(gas))
+                alert(`Cost of transaction:- ${web3.utils.fromWei(cost)}`);
+                await seed.methods.pause().send({
+                    from: account,
+                    gas,
+                    gasPrice
+                });
+            } catch (error) {
+                alert(error.message);
+            }
             return;
         }
         alert("Seed is already Paused");
@@ -112,9 +150,19 @@ const SeedCard = ({address, web3, account}) => {
 
     const unpause = async () => {
         if(isPaused){
-            await seed.methods.unpause().send({
-                from: account
-            });
+            try{
+                const gas = await seed.methods.unpause().estimateGas({from: account});
+                const gasPrice = await getGasPrice();
+                const cost = (new web3.utils.BN(gasPrice)).mul(new web3.utils.BN(gas))
+                alert(`Cost of transaction:- ${web3.utils.fromWei(cost)}`);
+                await seed.methods.unpause().send({
+                    from: account,
+                    gas,
+                    gasPrice
+                });
+            }catch (error){
+                alert(error.message);
+            }
             return;
         }
         alert("Seed is already Unpaused");
@@ -122,9 +170,19 @@ const SeedCard = ({address, web3, account}) => {
 
     const close = async () => {
         if(!isClosed){
-            await seed.methods.close().send({
-                from: account
-            });
+            try{
+                const gas = await seed.methods.close().estimateGas({from: account});
+                const gasPrice = await getGasPrice();
+                const cost = (new web3.utils.BN(gasPrice)).mul(new web3.utils.BN(gas))
+                alert(`Cost of transaction:- ${web3.utils.fromWei(cost)}`);
+                await seed.methods.close().send({
+                    from: account,
+                    gas,
+                    gasPrice
+                });
+            } catch (error) {
+                alert(error.message);
+            }
             return;
         }
         alert("Seed is already Closed");

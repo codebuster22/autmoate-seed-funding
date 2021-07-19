@@ -5,6 +5,8 @@ import getWeb3 from './getWeb3';
 import "./App.css";
 import SeedCard from "./SeedCard";
 
+const gasPriceUrl = `https://ethgasstation.info/api/ethgasAPI.json?api-key=${process.env.REACT_APP_GAS_STATION_KEY}`;
+
 class App extends Component {
     state = {
 		isLoaded: false,
@@ -97,7 +99,7 @@ class App extends Component {
 
 	renderDeployedSeeds = (seeds) => {
 		return seeds.map(
-			seed => <SeedCard key={seed} address={seed} web3={this.web3} account={this.state.currentAccount} />
+			seed => <SeedCard key={seed} address={seed} web3={this.web3} account={this.state.currentAccount} gasPriceUrl={gasPriceUrl} />
 		)
 	}
 
