@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/autmoate-seed-funding/static/css/main.2d06895d.chunk.css",
-    "main.js": "/autmoate-seed-funding/static/js/main.946cf192.chunk.js",
-    "main.js.map": "/autmoate-seed-funding/static/js/main.946cf192.chunk.js.map",
+    "main.js": "/autmoate-seed-funding/static/js/main.fc421d85.chunk.js",
+    "main.js.map": "/autmoate-seed-funding/static/js/main.fc421d85.chunk.js.map",
     "runtime-main.js": "/autmoate-seed-funding/static/js/runtime-main.7ab2e8c1.js",
     "runtime-main.js.map": "/autmoate-seed-funding/static/js/runtime-main.7ab2e8c1.js.map",
     "static/js/2.86a91348.chunk.js": "/autmoate-seed-funding/static/js/2.86a91348.chunk.js",
@@ -17,6 +17,6 @@
     "static/js/runtime-main.7ab2e8c1.js",
     "static/js/2.86a91348.chunk.js",
     "static/css/main.2d06895d.chunk.css",
-    "static/js/main.946cf192.chunk.js"
+    "static/js/main.fc421d85.chunk.js"
   ]
 }
