@@ -9,6 +9,8 @@ const SeedCard = ({address, web3, account, gasPriceUrl}) => {
     const [seed, setSeed] = useState();
     const [token, setToken] = useState();
     const [tokenName, setTokenName] = useState();
+    const [fundingToken, setFundingToken] = useState();
+    const [fundingTokenName, setFundingTokenName] = useState();
     const [requiredTokens, setRequiredTokens] = useState('0');
     const [isWhitelisted, setIsWhitelisted] = useState(false);
     const [isFunded, setIsFunded] = useState(false);
@@ -25,15 +27,35 @@ const SeedCard = ({address, web3, account, gasPriceUrl}) => {
             const seedToken = await seed.methods.seedToken().call();
             const token = new web3.eth.Contract(ERC20.abi, seedToken);
             setToken(token);
-            setIsLoaded(true);
         };
+        const getFundingToken = async () => {
+            const fundingToken = await seed.methods.fundingToken().call();
+            const token = new web3.eth.Contract(ERC20.abi, fundingToken);
+            setFundingToken(token);
+        }
         setSeed(seed);
         getToken();
+        getFundingToken();
     },[address, web3]);
+
+    useEffect(
+        () => {
+            if(
+                token != undefined && fundingToken != undefined
+            ) {
+                setIsLoaded(true);
+            }
+        }, [token, fundingToken]
+    )
 
     const getTokenName = async () => {
         const tokenName = await token.methods.name().call();
         setTokenName(tokenName);
+    }
+
+    const getFundingTokenName = async () => {
+        const fundingTokenName = await fundingToken.methods.name().call();
+        setFundingTokenName(fundingTokenName);
     }
 
     const calculateRequiredSeed = async () => {
@@ -193,6 +215,7 @@ const SeedCard = ({address, web3, account, gasPriceUrl}) => {
         () => {
             if(isLoaded){
                 getTokenName();
+                getFundingTokenName();
                 getAdmin();
                 calculateRequiredSeed();
                 checkIfWhiteList();
@@ -223,6 +246,8 @@ const SeedCard = ({address, web3, account, gasPriceUrl}) => {
                     Admin:- {admin}<br />
                     Seed Token Address:- {token.options.address}<br/>
                     Seed Token Name:- {tokenName}<br />
+                    Funding Token Address:- {fundingToken.options.address}<br/>
+                    Funding Token Name:- {fundingTokenName}<br />
                     Required Seed Tokens:- {requiredTokens}<br/>
                     Balance:- {balance}<br/>
                     isFunded:- {isFunded.toString()}<br/>
