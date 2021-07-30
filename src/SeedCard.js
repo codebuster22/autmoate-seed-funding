@@ -2,8 +2,9 @@ import Seed from './contracts/Seed.json';
 import ERC20 from './contracts/ERC20.json';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Button, Card } from 'react-bootstrap';
 
-const SeedCard = ({address, web3, account, gasPriceUrl}) => {
+const SeedCard = ({address, web3, network, account, gasPriceUrl}) => {
 
     const [isLoaded, setIsLoaded] = useState(false);
     const [seed, setSeed] = useState();
@@ -239,50 +240,115 @@ const SeedCard = ({address, web3, account, gasPriceUrl}) => {
 
     return (
         isLoaded?(
-            <div className={"seed-card"}>
-                <h4>Project Name:- {name}</h4>
-                <p>
-                    Seed:- {seed.options.address}<br />
-                    Admin:- {admin}<br />
-                    Seed Token Address:- {token.options.address}<br/>
-                    Seed Token Name:- {tokenName}<br />
-                    Funding Token Address:- {fundingToken.options.address}<br/>
-                    Funding Token Name:- {fundingTokenName}<br />
-                    Required Seed Tokens:- {requiredTokens}<br/>
-                    Balance:- {balance}<br/>
-                    isFunded:- {isFunded.toString()}<br/>
-                    isWhitelisted:- {isWhitelisted.toString()}<br/>
-                    isClosed:- {isClosed.toString()}<br/>
-                    isPaused:- {isPaused.toString()}<br/>
-                </p>
-                <button type={'button'} onClick={getSeedStatus}>Refresh Seed Status</button>
-                {
-                    isClosed?
-                        null
-                        :
-                        (<>
-                            <button type={'button'} onClick={close}>Close Seed</button>
-                            {
-                                isPaused?
-                                    <button type={'button'} onClick={unpause}>Unpause Seed</button>
-                                    :
-                                    <button type={'button'} onClick={pause}>Pause Seed</button>
-                            }
-                            {
-                                isWhitelisted?
-                                    <button type={'button'} onClick={addWhitelist}>Add Whitelist</button>
-                                    :
-                                    null
-                            }
-                            {
-                                (!isFunded && balance === '0')?
-                                    <button type={'button'} onClick={fundSeed}>Fund Seed</button>
-                                    :
-                                    null
-                            }
-                        </>)
-                    }
-            </div>
+            <Card 
+                bg={"prime-seed-card"} 
+                style={{
+                    maxWidth: "816px", 
+                    marginBottom: "20px", 
+                    marginRight: "auto", 
+                    marginLeft: "auto",
+                    paddingLeft: "20px",
+                    paddingRight: "20px"
+                    }}>
+              <Card.Body bsPrefix={"card-body tl"}>
+                <div className={"seed-details-wrapper"}>
+                    <Card.Title>{name}</Card.Title>
+                    <Card.Subtitle className="mb-2 text-muted">
+                        Seed Address: <a 
+                                        target="_blank" 
+                                        rel="noopener noreferrer" 
+                                        href={`https://${network==="mainnet"?"":"rinkeby."}etherscan.io/address/${seed.options.address}`}
+                                        >{seed.options.address}</a>
+                    </Card.Subtitle>
+                    <Card.Text>
+                        Admin:- {admin}<br />
+                        Seed Token Address:- {token.options.address}<br/>
+                        Seed Token Name:- {tokenName}<br />
+                        Funding Token Address:- {fundingToken.options.address}<br/>
+                        Funding Token Name:- {fundingTokenName}<br />
+                        Required Seed Tokens:- {requiredTokens}<br/>
+                        Balance:- {balance}<br/>
+                        isFunded:- {isFunded.toString()}<br/>
+                        isWhitelisted:- {isWhitelisted.toString()}<br/>
+                        isClosed:- {isClosed.toString()}<br/>
+                        isPaused:- {isPaused.toString()}<br/>
+                    </Card.Text>
+                </div>
+                <div className={"seed-action-wrapper"}>
+                    <Button bsPrefix={"prime-btn btn"} type={'button'} onClick={getSeedStatus}>Refresh Seed Status</Button>
+                    {
+                        isClosed?
+                            null
+                            :
+                            (<>
+                                <Button bsPrefix={"prime-btn btn"} type={'button'} onClick={close}>Close</Button>
+                                {
+                                    isPaused?
+                                        <Button bsPrefix={"prime-btn btn"} type={'button'} onClick={unpause}>Unpause</Button>
+                                        :
+                                        <Button bsPrefix={"prime-btn btn"} type={'button'} onClick={pause}>Pause</Button>
+                                }
+                                {
+                                    isWhitelisted?
+                                        <Button bsPrefix={"prime-btn btn"} type={'button'} onClick={addWhitelist}>Add Whitelist</Button>
+                                        :
+                                        null
+                                }
+                                {
+                                    (!isFunded && balance === '0')?
+                                        <Button bsPrefix={"prime-btn btn"} type={'button'} onClick={fundSeed}>Fund</Button>
+                                        :
+                                        null
+                                }
+                            </>)
+                        }
+                </div>
+              </Card.Body>
+            </Card>
+            // <div className={"seed-card"}>
+            //     <h4>Project Name:- </h4>
+            //     <p>
+            //         Seed:- {seed.options.address}<br />
+            //         Admin:- {admin}<br />
+            //         Seed Token Address:- {token.options.address}<br/>
+            //         Seed Token Name:- {tokenName}<br />
+            //         Funding Token Address:- {fundingToken.options.address}<br/>
+            //         Funding Token Name:- {fundingTokenName}<br />
+            //         Required Seed Tokens:- {requiredTokens}<br/>
+            //         Balance:- {balance}<br/>
+            //         isFunded:- {isFunded.toString()}<br/>
+            //         isWhitelisted:- {isWhitelisted.toString()}<br/>
+            //         isClosed:- {isClosed.toString()}<br/>
+            //         isPaused:- {isPaused.toString()}<br/>
+            //     </p>
+            //     <button type={'button'} onClick={getSeedStatus}>Refresh Seed Status</button>
+            //     {
+            //         isClosed?
+            //             null
+            //             :
+            //             (<>
+            //                 <button type={'button'} onClick={close}>Close Seed</button>
+            //                 {
+            //                     isPaused?
+            //                         <button type={'button'} onClick={unpause}>Unpause Seed</button>
+            //                         :
+            //                         <button type={'button'} onClick={pause}>Pause Seed</button>
+            //                 }
+            //                 {
+            //                     isWhitelisted?
+            //                         <button type={'button'} onClick={addWhitelist}>Add Whitelist</button>
+            //                         :
+            //                         null
+            //                 }
+            //                 {
+            //                     (!isFunded && balance === '0')?
+            //                         <button type={'button'} onClick={fundSeed}>Fund Seed</button>
+            //                         :
+            //                         null
+            //                 }
+            //             </>)
+            //         }
+            // </div>
             )
             :
             <div>Loading...</div>

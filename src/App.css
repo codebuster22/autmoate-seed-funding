@@ -19,6 +19,49 @@
   padding: 2px;
 }
 
+.bg-prime-header{
+  background-color: #1B1722 !important;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.15);
+}
+
+.prime-btn{
+  background: linear-gradient(220.2deg, #FF497A 0%, #A258A7 100%);
+  border-radius: 35.5px !important;
+  border-color: transparent !important;
+  width: 175px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.seed-action-wrapper{
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.load-btn-container{
+  margin: 25px 0 25px 0;
+}
+
+.bg-prime-header-factory-card{
+  background-color: #292235 !important;
+  border-radius: 5px !important;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bg-prime-seed-card{
+  background-color: #292235 !important;
+  border-radius: 6px !important;
+}
+
+.mr-2{
+  margin-right: 50px;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -28,6 +71,14 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+.seed-details-wrapper{
+  padding: 10px 0 10px 25px;
+}
+
+.tl{
+  text-align: left !important;
 }
 
 .App-link {
