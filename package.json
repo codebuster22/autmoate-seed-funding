@@ -1,7 +1,7 @@
 {
   "name": "auto-deploy-seeds",
   "version": "0.1.0",
-  "homepage": "https://github.com/codebuster22/autmoate-seed-funding.git",
+  "homepage": "https://PrimeDAO.github.com/prime-launch-admin-dapp",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.14.1",
